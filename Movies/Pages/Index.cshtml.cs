@@ -9,29 +9,40 @@ namespace Movies.Pages
 {
     public class IndexModel : PageModel
     {
-        [BindProperty]
-        public string SearchTerms{get;set;}
+       
+        public string SearchTerms { get; set; } = "";
 
         public IEnumerable<Movie> Movies {get; protected set;}
 
-        [BindProperty]
+   
         public string[] MPAARatings {get;set;}
 
-        [BindProperty]
+       
         public string[] Genres {get;set;}
 
+        public double? RTMin { get; set; }
+
+        public double? RTMax { get; set; }
+        
         public double? IMDBMin {get; set;}
 
+        
         public double? IMDBMax {get;set;}
 
-        public void OnGet(string SearchTerms, string[] MPAARatings, string[] Genre, double IMDBMin, double IMDBMax)
+        public void OnGet(double? IMDBMax, double? IMDBMin, double? RTMax, double? RTMin)
         {
-            string terms = Request.Query["SearchTerms"];
+            this.IMDBMin = IMDBMin;
+            this.IMDBMax = IMDBMax;
+            this.RTMin = RTMin;
+            this.RTMax = RTMax;
+            SearchTerms = Request.Query["SearchTerms"];     //my code wouldn't work the same as the tutorial so it had to stay like this
             MPAARatings = Request.Query["MPAARatings"];
-            IMDBMin = double.Parse(Request.Query["IMDBMin"]);
-            IMDBMax = double.Parse(Request.Query["IMDBMax"]);
+            Genres = Request.Query["Genres"];
             Movies = MovieDatabase.Search(SearchTerms);
             Movies = MovieDatabase.FilterByMPAARating(Movies, MPAARatings);
+            Movies = MovieDatabase.FilterByGenre(Movies, Genres);
+            Movies = MovieDatabase.FilterByIMDBRating(Movies, IMDBMin, IMDBMax);
+            Movies = MovieDatabase.FilterByRotten(Movies, RTMin, RTMax);
         }
     }
 }

@@ -23,33 +23,43 @@ namespace Movies
             {
                 string json = file.ReadToEnd();
                 movies = JsonConvert.DeserializeObject<List<Movie>>(json);
+                
             }
+            HashSet<string> genreSet = new HashSet<string>();
+                foreach(Movie movie in movies)
+                {
+                    if(movie.MajorGenre != null)
+                    {
+                        genreSet.Add(movie.MajorGenre);
+                    }
+                }
+                genres = genreSet.ToArray();
         }
 
         private static string[] genres;
 
-        public static string[] Geres => genres;
+        public static string[] Genres => genres;
 
-        public IEnumerable<string> Genres
+       
+        public static IEnumerable<Movie> FilterByGenre(IEnumerable<Movie> movies, IEnumerable<string> genre)
         {
-            get
+            if (genre == null || genre.Count() == 0) return movies;
+            List<Movie> results = new List<Movie>();
+            foreach(Movie movie in movies)
             {
-                HashSet<string> genres = new HashSet<string>();
-                foreach(Movie movie in All)
+                if (movie.MajorGenre != null && genre.Contains(movie.MajorGenre))
                 {
-                    if(movie.MajorGenre != null)
-                    {
-                        genres.Add(movie.MajorGenre);
-                    }
+                    results.Add(movie);
                 }
-                genres = genreSet.ToArray();
             }
+            return results;
         }
+       
 
-        public static IEnumerable<Movie> FilterByMPAARating(IENumerable<Movie> movies, IEnumerable<string> ratings)
+        public static IEnumerable<Movie> FilterByMPAARating(IEnumerable<Movie> movies, IEnumerable<string> ratings)
         {
             if(ratings == null || ratings.Count() == 0) return movies;
-            List<Movies> results = new List<Movie>();
+            List<Movie> results = new List<Movie>();
             foreach(Movie movie in movies)
             {
                 if(movie.MPAARating != null && ratings.Contains(movie.MPAARating))
@@ -86,17 +96,49 @@ namespace Movies
                 {
                     results.Add(movie);
                 }
+                
+            }
+            return results;
+        }
+
+        public static IEnumerable<Movie> FilterByRotten(IEnumerable<Movie> movies, double? min, double? max)
+        {
+            if (min == null && max == null) return movies;
+            var results = new List<Movie>();
+            if (min == null)
+            {
+                foreach (Movie movie in movies)
+                {
+                    if (movie.RottenTomatoesRating <= max) results.Add(movie);
+                }
                 return results;
             }
+            if (max == null)
+            {
+                foreach (Movie movie in movies)
+                {
+                    if (movie.RottenTomatoesRating >= min) results.Add(movie);
+                }
+                return results;
+            }
+            foreach (Movie movie in movies)
+            {
+                if (movie.RottenTomatoesRating >= min && movie.RottenTomatoesRating <= max)
+                {
+                    results.Add(movie);
+                }
+
+            }
+            return results;
         }
 
         public static IEnumerable<Movie> Search(string terms)
         {
             List<Movie> results = new List<Movie>();
-            if(SearchTerms == null) return All;
+            if(terms == null) return All;
             foreach(Movie movie in All)
             {
-                if(movie.Title != null && movie.Title.Contains(terms, StringCompareison.InvariantCultureIgnoreCase))
+                if(movie.Title != null && movie.Title.Contains(terms, StringComparison.InvariantCultureIgnoreCase))
                 {
                     results.Add(movie);
                 }
@@ -120,6 +162,7 @@ namespace Movies
                 "R",
                 "NC-17"
             };
+            
         }
     }
 }

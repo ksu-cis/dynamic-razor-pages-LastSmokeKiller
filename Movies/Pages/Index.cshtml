@@ -13,14 +13,14 @@
 
     <div id="filters">
         <h4>MPAA Rating</h4>
-        @foreach (String rating in MovieDataBase.MPAARating)
-    {
-        <label>
-            <input type="checkbox" name="MPAARatings" value="@rating"
-                   checked="@Model.MPAARatings.Contains(rating)" />
-            @rating
-        </label>
-    }
+        @foreach(string rating in MovieDatabase.MPAARatings)
+        {
+            <label>
+                <input type="checkbox" name="MPAARatings" value="@rating" checked="@Model.MPAARatings.Contains(rating)"/>
+                @rating
+            </label>
+        }
+
         <h4>Genre</h4>
         @foreach (string genre in MovieDatabase.Genres)
         {
@@ -35,7 +35,15 @@
             Between
             <input name="IMDBMin" type="number" min="0" max="10" step="0.1" placeholder="min"/>
             and
-            <input name="IMDBMax" type="number" min="0" max="10" step="0.1" placeholder="min"/>
+            <input name="IMDBMax" type="number" min="0" max="10" step="0.1" placeholder="max"/>
+        </div>
+
+        <h4>Rotten Rating</h4>
+        <div>
+            Between
+            <input name="RTMin" type="number" min="0" max="100" step="1" placeholder="min"/>
+            and
+            <input name="RTMax" type="number" min="0" max="100" step="1" placeholder="max"/>
         </div>
     </div>
 
@@ -44,7 +52,7 @@
 
 
             <ul class="movie-list">
-                @foreach(Movie movie in MovieDatabase.All)
+                @foreach(Movie movie in @Model.Movies)
     {
                 <li>
                     <div class="details">
