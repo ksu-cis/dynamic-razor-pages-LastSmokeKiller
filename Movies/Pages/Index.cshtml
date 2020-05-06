@@ -16,7 +16,7 @@
         @foreach(string rating in MovieDatabase.MPAARatings)
         {
             <label>
-                <input type="checkbox" name="MPAARatings" value="@rating" checked="@Model.MPAARatings.Contains(rating)"/>
+                <input type="checkbox" name="MPAARatings" value="@rating" />
                 @rating
             </label>
         }
